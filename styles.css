@@ -1,0 +1,12 @@
+#todoapp ul {
+	list-style-type: none;
+}
+#todo-list input.edit {
+	display: none;
+}
+#todo-list .editing label {
+	display: inline;
+}
+#todo-list .editing input.edit {
+	display: inline;
+}
