@@ -95,7 +95,7 @@
 					this.input.val('') //clears input after enter
 				},
 				addOne: function(todo) {
-					let view = new app.Todoview({ model: todo })
+					let view = new app.TodoView({ model: todo })
 					$('#todo-list').append(view.render().el)
 				},
 				addAll: function() {
@@ -104,14 +104,14 @@
 				},
 				newAttributes: function() {
 					return {
-						title: this.input.val.trim(),
+						title: this.input.val().trim(),
 						completed: false
 					}
 				}
 			})
 
 			// Initializer
-			app.appView = new app.Appview()
+			app.appView = new app.AppView()
 		</script>
 	</body>
 </html>
