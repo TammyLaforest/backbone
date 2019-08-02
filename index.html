@@ -42,19 +42,7 @@
 			</div>
 		</script>
 		<script type="text/javascript">
-			// var AppView = Backbone.View.extend({
-			// 	el: '#container',
-			// 	template: _.template('<h3>Hello <%= who %></h3>'),
-
-			// 	initialize: function() {
-			// 		this.render()
-			// 	},
-
-			// 	render: function() {
-			// 		this.$el.html(this.template({ who: 'Tammy!' }))
-			// 	}
-			// })
-			// var appView = new AppView()
+			// Models
 
 			var app = {}
 			app.Todo = Backbone.Model.extend({
@@ -63,13 +51,67 @@
 					completed: false
 				}
 			})
+
+			// Collections
+
 			app.TodoList = Backbone.Collection.extend({
 				model: app.Todo,
 				localStorage: new Store('backbone-todo')
 			})
 
 			// instance of Collection
-			app.tosoList = new app.TodoList()
+			app.todoList = new app.TodoList()
+
+			// Views
+
+			// individual todo item rendering
+			app.TodoView = Backbone.View.extend({
+				tagName: 'li',
+				template: _.template($('#item-template').html()),
+				render: function() {
+					this.$el.html(this.template(this.model.toJSON()))
+					return this
+				}
+			})
+
+			// AppView
+
+			app.AppView = Backbone.View.extend({
+				el: '#todoapp',
+				initialize: function() {
+					this.input = this.$('#new-todo')
+					app.todoList.on('add', this.addOne, this)
+					app.todoList.on('reset', this.addAll, this)
+					app.todoList.fetch()
+				},
+				events: {
+					'keypress #new-todo': 'createTodoOnEnter'
+				},
+				createTodoOnEnter: function(e) {
+					if (e.which !== 13 || !this.input.val().trim()) {
+						return
+					}
+					app.todoList.create(this.newAttributes())
+					this.input.val('') //clears input after enter
+				},
+				addOne: function(todo) {
+					let view = new app.Todoview({ model: todo })
+					$('#todo-list').append(view.render().el)
+				},
+				addAll: function() {
+					this.$('#todo-list').html('')
+					app.todoList.each(this.addOne, this)
+				},
+				newAttributes: function() {
+					return {
+						title: this.input.val.trim(),
+						completed: false
+					}
+				}
+			})
+
+			// Initializer
+			app.appView = new app.Appview()
 		</script>
 	</body>
 </html>
